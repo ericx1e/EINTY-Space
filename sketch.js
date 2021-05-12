@@ -1,7 +1,7 @@
 let _text;
 
 function setup() {
-    backgroundImg = loadImage('assets/milkyway.jpg');
+    backgroundImg = loadImage('assets/milkyway2.jpg');
     img1 = loadImage('assets/earth.jpg');
     img2 = loadImage('assets/sun.jpg');
     img3 = loadImage('assets/moon.jpg');
@@ -43,9 +43,11 @@ function draw() {
     rectMode(CENTER, CENTER);
     rect(0, -100, 100, 100);
     text('HELLO', 0, 0);
-    lights();
+    // lights();
     lightFalloff(0.5, 0, 0);
     pointLight(255, 255, 255, 0, 0, 0);
+    noLights();
+    ambientLight(255, 0, 0);
     // lights();
     texture(img2);
     sphere(50);
@@ -54,15 +56,16 @@ function draw() {
     translate(150, 0, 0);
     rotateY(rotation);
     texture(img1);
-    rotateY(rotation);
     sphere(25);
+    rotateY(-rotation*26/27);
     translate(50, 0, 0);
+    // rotateY(rotation/27);
     texture(img3);
     sphere(10);
     // box(100);
     pop();
-    rotation+=0.05;
-    orbit += 0.01;
+    rotation+=0.365;
+    orbit += 0.001;
 }
 
 function keyPressed() {
