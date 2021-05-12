@@ -1,7 +1,8 @@
 let _text;
-
+let helventicaFont
 function setup() {
     backgroundImg = loadImage('assets/milkyway.jpg');
+    helventicaFont = loadFont('assets/Helvetica 400.ttf');
     img1 = loadImage('assets/earth.jpg');
     img2 = loadImage('assets/sun.jpg');
     img3 = loadImage('assets/moon.jpg');
@@ -11,16 +12,6 @@ function setup() {
     rover.usePointerLock();
     // rover.setState({position: [-400,-0,-200], rotation: [0.4,0.3,0], sensitivity: 0.025, speed: 1.0});
     defaultView();
-
-
-  _text = createGraphics(window.innerWidth - 4, window.innerHeight - 4);
-  _text.clear();
-//   _text.textFont('Source Code Pro');
-  _text.textAlign(CENTER);
-  _text.textSize(133);
-  _text.fill(255);
-  _text.noStroke();
-  _text.text('test', width * 0.5, height * 0.5);
 }
 
 
@@ -36,13 +27,16 @@ function draw() {
     texture(backgroundImg);
     noStroke();
     sphere(500);
-    
+
     // fill(255);
-    rotateY(-PI/2);
-    texture(_text);
-    rectMode(CENTER, CENTER);
-    rect(0, -100, 100, 100);
+    push();
+    translate(0, -75, 0);
+    rotateY(-PI / 2 - rover.pan);
+    rotateX(+ rover.tilt);
+    textFont(helventicaFont);
+    textAlign(CENTER, CENTER);
     text('HELLO', 0, 0);
+    pop();
     lights();
     lightFalloff(0.5, 0, 0);
     pointLight(255, 255, 255, 0, 0, 0);
@@ -61,16 +55,16 @@ function draw() {
     sphere(10);
     // box(100);
     pop();
-    rotation+=0.05;
+    rotation += 0.05;
     orbit += 0.01;
 }
 
 function keyPressed() {
-    if(key == ' ') {
+    if (key == ' ') {
         defaultView();
     }
 }
 
 function defaultView() {
-    rover.setState({position: [-350,-300,0], rotation: [0,0.7,0], sensitivity: 0.025, speed: 1.0});
+    rover.setState({ position: [-350, -300, 0], rotation: [0, 0.7, 0], sensitivity: 0.025, speed: 1.0 });
 }
