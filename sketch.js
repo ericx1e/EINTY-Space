@@ -1,8 +1,8 @@
 let _text;
 let helventicaFont
 function setup() {
-    backgroundImg = loadImage('assets/milkyway.jpg');
     helventicaFont = loadFont('assets/Helvetica 400.ttf');
+    backgroundImg = loadImage('assets/milkyway2.jpg');
     img1 = loadImage('assets/earth.jpg');
     img2 = loadImage('assets/sun.jpg');
     img3 = loadImage('assets/moon.jpg');
@@ -35,12 +35,12 @@ function draw() {
     rotateX(+ rover.tilt);
     textFont(helventicaFont);
     textAlign(CENTER, CENTER);
-    text('HELLO', 0, 0);
+    text('Sun', 0, 0);
     pop();
     lights();
     lightFalloff(0.5, 0, 0);
     pointLight(255, 255, 255, 0, 0, 0);
-    // lights();
+    lights();
     texture(img2);
     sphere(50);
     push();
@@ -48,15 +48,16 @@ function draw() {
     translate(150, 0, 0);
     rotateY(rotation);
     texture(img1);
-    rotateY(rotation);
     sphere(25);
+    rotateY(-rotation * 26 / 27);
     translate(50, 0, 0);
+    // rotateY(rotation/27);
     texture(img3);
     sphere(10);
     // box(100);
     pop();
-    rotation += 0.05;
-    orbit += 0.01;
+    rotation += 0.365;
+    orbit += 0.001;
 }
 
 function keyPressed() {
