@@ -2,6 +2,7 @@ let _text;
 let font;
 var rover;
 let planets = [];
+let galaxy = true;
 
 let totalScenes = 3;
 
@@ -30,9 +31,11 @@ let startingFrame = 0;
 
 function draw() {
     background(0);
-    texture(backgroundTex);
-    noStroke();
-    sphere(700);
+    if(galaxy) {
+        texture(backgroundTex);
+        noStroke();
+        sphere(700);
+    }
     push();
     translate(rover.position.x, rover.position.y, rover.position.z);
     rotateY(-PI / 2 - rover.pan);
@@ -47,7 +50,7 @@ function draw() {
 
     textSize(3);
     textAlign(CORNER, CORNER);
-    text("‣ Click to toggle camera control\n‣ Use WASD or Q E to control the camera\n‣ Use 1 and 2 for preset camera angles\n‣ Use left and right arrow keys to switch scenes and R to restart scenes", -width / 18, -height / 20);
+    text("‣ Click to toggle camera control\n‣ Use Spacebar to toggle galaxy sphere \n‣ Use WASD or Q E to control the camera\n‣ Use 1 and 2 for preset camera angles\n‣ Use left and right arrow keys to switch scenes and R to restart scenes", -width / 18, -height / 20);
     pop();
 
     if (scene == 0) {
@@ -59,22 +62,45 @@ function draw() {
         frame = frameCount - startingFrame;
         planets[scene].forEach(planet => {
             planet.update();
+            // planets[1].push(new Planet()
+            if(frame == 0) {}
             if (frame < 200) {
                 if (planet.distance > 0) {
                     planet.distance += 0.5;
                     planet.orbitSpeed *= 0.999;
+                    if(planet.text == 'James') {
+                        planet.orbitSpeed *= 0.999;
+                    }
+                    if(planet.text == 'Lousia') {
+                        planet.size += 30/200;
+                    }
+                    if(planet.text == 'Lyida') {
+                        planet.size -=0.5;
+                    }
                 }
             } else {
-                if(planet.text == 'James') {
+                if(planet.text == 'James' && planet.orbitSpeed > 0) {
                     // console.log(planet.orbit%PI)
-                    if(abs(planet.orbit%2*PI-0) < 0.1) {
-                        planet.tex = earthTex;
+                    if(abs(planet.orbit%(2*PI)-1.5*PI) < 0.1) {
+                        planet.orbitZ = 480;
+                        planet.distance = 100;
+                        planet.orbit *= -1;
+                        planet.orbitSpeed *= -1;
+                        // planet.tex = earthTex;
+                        planet.rotation *= -1;
+                        planets[1][planets[1].length-1].orbitSpeed = planet.orbitSpeed;
+                        // planets[1][planets[1].length-1].orbitZ = 480;
+                        // planets[1][planets[1].length-1].distance = 100;
                     } else {
                         planet.tex = icyTex;
                     }
                 }
             }
         });
+    }
+
+    if(scene == 2) {
+        frame = frameCount - startingFrame;
     }
 }
 
@@ -87,6 +113,10 @@ function keyPressed() {
         overheadView();
     }
 
+    if(key == ' ') {
+        galaxy = !galaxy;
+    }
+
     if (key == 'r') {
         reset();
     }
@@ -95,10 +125,7 @@ function keyPressed() {
         if (scene < 2) {
             scene++;
             // reset();
-            if(scene == 1) {
-                planets[1] = planets[0];
-            }
-            startingFrame = frameCount;
+            startScene();
             // defaultView();
         }
     }
@@ -106,9 +133,28 @@ function keyPressed() {
     if (keyCode == LEFT_ARROW) {
         if (scene > 0) {
             scene--;
-            reset();
+            // reset();
+            startScene();
             // defaultView();
         }
+    }
+}
+
+function startScene() {
+    if(scene == 0) {
+        planets[0] = [];
+
+        planets[0].push(new Planet(sunTex, 'Lydia', 0, 50, 0, 0, 0, 0.003, 0, 0));
+        planets[0].push(new Planet(greenTex, 'Jack', 100, 25, 0, 0, 0, 0.01, 0.01, 0));
+        planets[0].push(new Planet(icyTex, 'Marilyn', 200, 30, 0, 0, 0, 0.01, 0.02, 0));
+        planets[0].push(new Planet(icyTex, 'James', 280, 30, 0, 0, 0, 0.01, 0.015, PI));
+        planets[0].push(new Planet(neptuneTex, 'Hannah', 550, 25, 0, 0, 0, 0.01, 0.001, 0));
+    
+    }
+    if(scene == 1) {
+        planets[1] = planets[0];
+        startingFrame = frameCount;
+        planets[1].push(new Planet(icyTex, 'Lousia', 1, 0, 0, 0, 480, 0.01, 0, -PI/2));
     }
 }
 
@@ -118,7 +164,7 @@ function defaultView() {
 
 function overheadView() {
 
-    rover.setState({ position: [0, -600, 0], rotation: [0, PI / 2, 0], sensitivity: 0.025, speed: 1.0 });
+    rover.setState({ position: [0, -670, 0], rotation: [0, PI / 2, 0], sensitivity: 0.025, speed: 1.0 });
 }
 
 function reset() {
@@ -169,7 +215,7 @@ function Planet(tex, tx, d, size, ox, oy, oz, rs, os, io) {
         noStroke();
         sphere(this.size);
         if (this.text == 'Lydia' && scene == 1) {
-            fill(0, 200);
+            fill(0, Math.min(210, frame));
             sphere(this.size + 5);
         }
 
