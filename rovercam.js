@@ -39,10 +39,10 @@ class RoverCam {
     this.reset();
     this.active = true; // use the setActive method
     this.enableControl = true; // used to enable/disable controls
-    if(instance !== undefined) this.p5 = instance;
+    if (instance !== undefined) this.p5 = instance;
     else this.p5 = p5.instance;
-    if(this.p5 !== null)
-      this.p5.registerMethod('post', () => {if (this.active) this.draw();});
+    if (this.p5 !== null)
+      this.p5.registerMethod('post', () => { if (this.active) this.draw(); });
     this.keyMap = {   // maps each control command to a pair of keys
       mx1: [87, 38],  // w, UP_ARROW
       mx2: [83, 40],  // s, DOWN_ARROW
@@ -50,16 +50,16 @@ class RoverCam {
       my2: [68, 39],  // d, RIGHT_ARROW
       mz1: [69, 69],  // e
       mz2: [81, 81],  // q
-      y1:  [65, 37],  // a, LEFT_ARROW
-      y2:  [68, 39],  // d, RIGHT_ARROW
-      p1:  [82, 82],  // r
-      p2:  [70, 70],  // f
-      r1:  [90, 90],  // z
-      r2:  [67, 67],  // c
-      f1:  [107,187], // +
-      f2:  [109,189], // -
-      e1:  [82, 82],  // r
-      e2:  [70, 70]   // f
+      y1: [65, 37],  // a, LEFT_ARROW
+      y2: [68, 39],  // d, RIGHT_ARROW
+      p1: [82, 82],  // r
+      p2: [70, 70],  // f
+      r1: [90, 90],  // z
+      r2: [67, 67],  // c
+      f1: [107, 187], // +
+      f2: [109, 189], // -
+      e1: [82, 82],  // r
+      e2: [70, 70]   // f
     };
   }
 
@@ -70,20 +70,20 @@ class RoverCam {
     if (RoverCam.pointerLock) {
       this.yaw(p.movedX * this.sensitivity / 10); // mouse left/right
       this.pitch(p.movedY * this.sensitivity / 10); // mouse up/down
-      if (p.keyIsDown(k.my1[0]) || p.keyIsDown(k.my1[1])) this.moveY( this.speed); // a
-      if (p.keyIsDown(k.my2[0]) || p.keyIsDown(k.my2[1])) this.moveY(-this.speed); // d
-      if (p.keyIsDown(k.e1[0]) || p.keyIsDown(k.e1[1])) this.elevate(-this.speed); // r
-      if (p.keyIsDown(k.e2[0]) || p.keyIsDown(k.e2[1])) this.elevate(this.speed); // f
+      if (p.keyIsDown(k.my1[0]) || p.keyIsDown(k.my1[0])) this.moveY(this.speed); // a
+      if (p.keyIsDown(k.my2[0]) || p.keyIsDown(k.my2[0])) this.moveY(-this.speed); // d
+      // if (p.keyIsDown(k.e1[0]) || p.keyIsDown(k.e1[1])) this.elevate(-this.speed); // r
+      // if (p.keyIsDown(k.e2[0]) || p.keyIsDown(k.e2[1])) this.elevate(this.speed); // f
     } else { // otherwise yaw/pitch with keys
-      if (p.keyIsDown(k.y1[0]) || p.keyIsDown(k.y1[1])) this.yaw(-this.sensitivity); // a
-      if (p.keyIsDown(k.y2[0]) || p.keyIsDown(k.y2[1])) this.yaw(this.sensitivity); // d
+      if (p.keyIsDown(k.y1[0]) || p.keyIsDown(k.y1[0])) this.yaw(-this.sensitivity); // a
+      if (p.keyIsDown(k.y2[0]) || p.keyIsDown(k.y2[0])) this.yaw(this.sensitivity); // d
       if (p.keyIsDown(k.p1[0]) || p.keyIsDown(k.p1[1])) this.pitch(-this.sensitivity); // r
       if (p.keyIsDown(k.p2[0]) || p.keyIsDown(k.p2[1])) this.pitch(this.sensitivity); // f
     }
-    if (p.keyIsDown(k.mx1[0]) || p.keyIsDown(k.mx1[1])) this.moveX(this.speed); // w
-    if (p.keyIsDown(k.mx2[0]) || p.keyIsDown(k.mx2[1])) this.moveX(-this.speed); // s
-    if (p.keyIsDown(k.mz1[0]) || p.keyIsDown(k.mz1[1])) this.moveZ(this.speed); // e
-    if (p.keyIsDown(k.mz2[0]) || p.keyIsDown(k.mz2[1])) this.moveZ(-this.speed); // q
+    if (p.keyIsDown(k.mx1[0]) || p.keyIsDown(k.mx1[0])) this.moveX(this.speed); // w
+    if (p.keyIsDown(k.mx2[0]) || p.keyIsDown(k.mx2[0])) this.moveX(-this.speed); // s
+    if (p.keyIsDown(k.mz1[0]) || p.keyIsDown(k.mz1[0])) this.moveZ(this.speed); // e
+    if (p.keyIsDown(k.mz2[0]) || p.keyIsDown(k.mz2[0])) this.moveZ(-this.speed); // q
 
     if (p.keyIsDown(k.f1[0]) || p.keyIsDown(k.f1[1])) this.fov(-this.sensitivity / 10); // +
     if (p.keyIsDown(k.f2[0]) || p.keyIsDown(k.f2[1])) this.fov(this.sensitivity / 10); // -
@@ -124,8 +124,8 @@ class RoverCam {
 
   // Utility methods
   usePointerLock(instance) {
-    if(instance === undefined) instance = p5.instance;
-    if(instance === null) return;
+    if (instance === undefined) instance = p5.instance;
+    if (instance === null) return;
     RoverCam.canvas = instance._renderer.elt;
     // ffd8 - click into pointerlock example based on:
     // https://p5js.org/reference/#/p5/exitPointerLock
@@ -146,28 +146,28 @@ class RoverCam {
     this.up = new p5.Vector(0, 1, 0);
     this.right = new p5.Vector(1, 0, 0);
     this.forward = new p5.Vector(0, 0, 1);
-    this.offset = [0,0]; // ffd8 - adjust height of cam
+    this.offset = [0, 0]; // ffd8 - adjust height of cam
   }
-  setActive(active){ // method to switch between multiple cameras
+  setActive(active) { // method to switch between multiple cameras
     this.active = active;
-    if(active) this.width=0; // trigger a perspective call in the draw loop
+    if (active) this.width = 0; // trigger a perspective call in the draw loop
   }
-  setState(state){ // state object can have fov,active,rotation,position
-    if(state.fov !== undefined) {
+  setState(state) { // state object can have fov,active,rotation,position
+    if (state.fov !== undefined) {
       this.fovy = state.fov;
       this.width = 0; // trigger a perspective call in the draw loop;
     }
-    if(state.active !== undefined) this.active = state.active;
-    if(state.rotation !== undefined) {
+    if (state.active !== undefined) this.active = state.active;
+    if (state.rotation !== undefined) {
       this.pan = state.rotation[0];
       this.tilt = state.rotation[1];
       this.rot = state.rotation[2];
     }
-    if(state.position !== undefined) this.position = new p5.Vector(state.position[0],state.position[1],state.position[2]);
-    if(state.offset !== undefined) this.offset = state.offset;
-    if(state.enableControl !== undefined) this.enableControl = state.enableControl;
-    if(state.speed !== undefined) this.speed = state.speed;
-    if(state.sensitivity !== undefined) this.sensitivity = state.sensitivity;
+    if (state.position !== undefined) this.position = new p5.Vector(state.position[0], state.position[1], state.position[2]);
+    if (state.offset !== undefined) this.offset = state.offset;
+    if (state.enableControl !== undefined) this.enableControl = state.enableControl;
+    if (state.speed !== undefined) this.speed = state.speed;
+    if (state.sensitivity !== undefined) this.sensitivity = state.sensitivity;
   }
 
   // This method is called after the main p5.js draw loop
@@ -188,15 +188,15 @@ class RoverCam {
 
     this.velocity.mult(this.friction);
     this.position.add(this.velocity);
-    let position = p5.Vector.sub(this.position, p5.Vector.mult(this.right,this.offset[1]));
+    let position = p5.Vector.sub(this.position, p5.Vector.mult(this.right, this.offset[1]));
     let center = p5.Vector.add(position, this.forward);
-    this.p5.camera(position.x, position.y+this.offset[0], position.z, center.x, center.y+this.offset[0], center.z, this.up.x, this.up.y, this.up.z);
+    this.p5.camera(position.x, position.y + this.offset[0], position.z, center.x, center.y + this.offset[0], center.z, this.up.x, this.up.y, this.up.z);
   }
 
   clamp(aNumber, aMin, aMax) {
     return (aNumber > aMax ? aMax :
       aNumber < aMin ? aMin :
-      aNumber);
+        aNumber);
   }
 }
 
@@ -217,8 +217,8 @@ RoverCam.pointerLock = false;
 // handle exit from pointerLock when user presses ESCAPE
 RoverCam.onPointerlockChange = () => {
   if (document.pointerLockElement !== RoverCam.canvas &&
-      document.mozPointerLockElement !== RoverCam.canvas) RoverCam.pointerLock = false;
+    document.mozPointerLockElement !== RoverCam.canvas) RoverCam.pointerLock = false;
 }
-p5.prototype.createRoverCam = function(){
+p5.prototype.createRoverCam = function () {
   return new RoverCam(this);
 }
