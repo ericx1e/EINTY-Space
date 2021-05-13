@@ -77,8 +77,8 @@ class RoverCam {
     } else { // otherwise yaw/pitch with keys
       if (p.keyIsDown(k.y1[0]) || p.keyIsDown(k.y1[0])) this.yaw(-this.sensitivity); // a
       if (p.keyIsDown(k.y2[0]) || p.keyIsDown(k.y2[0])) this.yaw(this.sensitivity); // d
-      if (p.keyIsDown(k.p1[0]) || p.keyIsDown(k.p1[1])) this.pitch(-this.sensitivity); // r
-      if (p.keyIsDown(k.p2[0]) || p.keyIsDown(k.p2[1])) this.pitch(this.sensitivity); // f
+      // if (p.keyIsDown(k.p1[0]) || p.keyIsDown(k.p1[1])) this.pitch(-this.sensitivity); // r
+      // if (p.keyIsDown(k.p2[0]) || p.keyIsDown(k.p2[1])) this.pitch(this.sensitivity); // f
     }
     if (p.keyIsDown(k.mx1[0]) || p.keyIsDown(k.mx1[0])) this.moveX(this.speed); // w
     if (p.keyIsDown(k.mx2[0]) || p.keyIsDown(k.mx2[0])) this.moveX(-this.speed); // s

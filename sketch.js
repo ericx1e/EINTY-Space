@@ -42,8 +42,8 @@ function draw() {
     textSize(9);
     textAlign(CENTER, CENTER);
     fill(255);
-    translate(0, 0, -100);
-    text("Scene: " + (scene + 1), 0, -height / 20);
+    translate(0, 0, - height/9.5);
+    text("Scene: " + (scene + 1), 0, - height / 20);
 
     textSize(3);
     textAlign(CORNER, CORNER);
@@ -59,9 +59,19 @@ function draw() {
         frame = frameCount - startingFrame;
         planets[scene].forEach(planet => {
             planet.update();
-            if (frame < 100) {
+            if (frame < 200) {
                 if (planet.distance > 0) {
                     planet.distance += 0.5;
+                    planet.orbitSpeed *= 0.999;
+                }
+            } else {
+                if(planet.text == 'James') {
+                    // console.log(planet.orbit%PI)
+                    if(abs(planet.orbit%2*PI-0) < 0.1) {
+                        planet.tex = earthTex;
+                    } else {
+                        planet.tex = icyTex;
+                    }
                 }
             }
         });
@@ -84,6 +94,10 @@ function keyPressed() {
     if (keyCode == RIGHT_ARROW) {
         if (scene < 2) {
             scene++;
+            // reset();
+            if(scene == 1) {
+                planets[1] = planets[0];
+            }
             startingFrame = frameCount;
             // defaultView();
         }
@@ -92,7 +106,7 @@ function keyPressed() {
     if (keyCode == LEFT_ARROW) {
         if (scene > 0) {
             scene--;
-            startingFrame = frameCount;
+            reset();
             // defaultView();
         }
     }
@@ -119,7 +133,7 @@ function reset() {
     planets[0].push(new Planet(greenTex, 'Jack', 100, 25, 0, 0, 0, 0.01, 0.01, 0));
     planets[0].push(new Planet(icyTex, 'Marilyn', 200, 30, 0, 0, 0, 0.01, 0.02, 0));
     planets[0].push(new Planet(icyTex, 'James', 280, 30, 0, 0, 0, 0.01, 0.015, PI));
-    planets[0].push(new Planet(neptuneTex, 'Hannah', 600, 25, 0, 0, 0, 0.01, 0.001, 0));
+    planets[0].push(new Planet(neptuneTex, 'Hannah', 550, 25, 0, 0, 0, 0.01, 0.001, 0));
 
 
     planets[1].push(new Planet(sunTex, 'Lydia', 0, 50, 0, 0, 0, 0, 0, 0));
