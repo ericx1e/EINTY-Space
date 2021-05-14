@@ -130,7 +130,8 @@ function draw() {
                     if (abs(planet.orbit % (2 * PI) - 1.5 * PI) < 0.1) {
                         planet.orbitZ = 480;
                         planet.distance = 100;
-                        planet.orbit *= -1;
+                        planet.orbit += PI;
+                        planet.orbit %= (2*PI);
                         planet.orbitSpeed *= -1;
                         // planet.tex = earthTex;
                         planet.rotation *= -1;
