@@ -86,14 +86,14 @@ function draw() {
             }
 
             if (planet.text == 'Nath') {
-                planet.orbit %= (2 * PI);
-                jOrbit %= (2 * PI);
-                if (planet.orbit < 0) {
-                    planet.orbit = 2 * PI;
-                }
-                if (jOrbit < 0) {
-                    jOrbit = 2 * PI;
-                }
+                // planet.orbit %= (2 * PI);
+                // jOrbit %= (2 * PI);
+                // if (planet.orbit < 0) {
+                //     planet.orbit = 2 * PI;
+                // }
+                // if (jOrbit < 0) {
+                //     jOrbit = 2 * PI;
+                // }
                 if (abs(planet.orbit - jOrbit) < 0.3) {
                     collision = true;
                     planet.orbitSpeed *= -1;
@@ -156,14 +156,20 @@ function draw() {
                 jOS = planet.orbitSpeed;
             }
             if (planet.text == 'Nath' && !connected) {
-                planet.orbit %= (2 * PI);
-                jOrbit %= (2 * PI);
-                if (planet.orbit < 0) {
-                    planet.orbit = 2 * PI;
-                }
-                if (jOrbit < 0) {
-                    jOrbit = 2 * PI;
-                }
+                // planet.orbit %= (2 * PI);
+                // jOrbit %= (2 * PI);
+                // if (planet.orbit > 2*PI) {
+                //     planet.orbit = 0;
+                // }
+                // if (jOrbit > 2 * PI) {
+                //     jOrbit = 0;
+                // }
+                // if (planet.orbit < 0) {
+                //     planet.orbit = 2 * PI;
+                // }
+                // if (jOrbit < 0) {
+                //     jOrbit = 2 * PI;
+                // }
                 if (abs(planet.orbit - jOrbit) < 0.3) {
                     planet.orbitSpeed = jOS;
                     // planet.rotationSpeed *= -1;
@@ -180,24 +186,23 @@ function draw() {
                     planet.distance -= 0.5;
                     planet.orbitSpeed += 0.00005;
                 }
-                if (planet.text == 'Nath') {
-                    planet.orbitSpeed *= 0.99;
+                if (planet.text == 'Nath' && !connected) {
+                    planet.orbitSpeed *= 0.9;
                 }
             } else {
-                if (planet.text == 'James' && planet.orbitSpeed < 0) {
-                    if (abs(planet.orbit % (2 * PI) - 0.5 * PI) < 0.1) {
-                        planet.orbitZ = 380;
-                        planet.distance = 50;
-                        planet.orbit *= -1;
-                        planet.orbitSpeed *= -1;
-                        planet.rotation *= -1;
-                    }
+                if (planet.text == 'James' && planet.orbitZ != 380) {
+                    planet.orbitZ = 380;
+                    planet.distance = 50;
+                    planet.orbit += PI;
+                    planet.orbit %= (2*PI);
+                    // planet.orbitSpeed *= -1;
+                    planet.rotation *= -1;
                 }
                 if (planet.text == 'Marilyn' && planet.orbitSpeed > 0) {
                     if (abs(planet.orbit % (2 * PI) - 1.5 * PI) < 0.1) {
                         planet.orbitZ = 380;
                         planet.distance = 50;
-                        planet.orbit *= -1;
+                        // planet.orbit *= -1;
                         planet.orbitSpeed *= -1;
                         planet.rotation *= -1;
                     }
@@ -270,6 +275,8 @@ function startScene() {
             arrayCopy(planets[1], 0, planets[2], 0, planets[1].length);
             // planets[2] = planets[1];
             planets[2].splice(0, 1);
+            collision = false;
+            connected = false;
         }
         startingFrame = frameCount;
     }
@@ -316,6 +323,8 @@ function reset() {
     planets[2].push(new Planet(neptuneTex, 'Hannah', 390, 25, 0, 0, 0, 0.01, 0.002624785320012295, 0));
     planets[2].push(new Planet(sun2Tex, 'Louisa', 0, 30, 0, 0, 480, 0.01, 0, -PI / 2));
 
+    collision = false;
+    connected = false;
 }
 
 function Planet(tex, tx, d, size, ox, oy, oz, rs, os, io) {
@@ -358,5 +367,11 @@ function Planet(tex, tx, d, size, ox, oy, oz, rs, os, io) {
         pop();
         this.rotation += this.rotationSpeed;
         this.orbit += this.orbitSpeed;
+        if(this.orbit < 0) {
+            this.orbit = 2 *PI;
+        }
+        if(this.orbit > 2*PI) {
+            this.orbit = 0;
+        }
     }
 }
