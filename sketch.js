@@ -3,6 +3,7 @@ let font;
 var rover;
 let planets = [];
 let galaxy = true;
+let instructions = true;
 
 let totalScenes = 3;
 
@@ -31,6 +32,7 @@ function setup() {
 let scene = 0;
 let startingFrame = 0;
 let collision = false;
+let connected = false;
 let frame;
 
 function draw() {
@@ -52,9 +54,11 @@ function draw() {
     translate(0, 0, - height / 9.5);
     text("Scene: " + (scene + 1), 0, - height / 20);
 
-    textSize(3);
-    textAlign(CORNER, CORNER);
-    text("‣ Click to toggle camera control\n‣ Use Spacebar to toggle galaxy sphere \n‣ Use WASD or Q E to control the camera\n‣ Use 1 and 2 for preset camera angles\n‣ Use left and right arrow keys to switch scenes and R to restart scenes", -width / 18, -height / 20);
+    if(instructions) {
+        textSize(3);
+        textAlign(CORNER, CORNER);
+        text("‣ Click to toggle camera control\n‣ Use Space to toggle galaxy sphere\n‣ Use O to toggle instruction text\n‣ Use WASD or Q E to control the camera\n‣ Use 1 and 2 for preset camera angles\n‣ Use left and right arrow keys to switch scenes and R to restart scenes\n‣ Wait until the end of scenes for smooth transitions", -width / 18, -height / 20);
+    }
     pop();
 
     if (scene == 0) {
@@ -141,15 +145,43 @@ function draw() {
 
     if (scene == 2) {
         frame = frameCount - startingFrame;
+        let jOS;
         if (planets[scene].length > 5 && frame > 200) {
             planets[scene].splice(planets[scene].length - 1, 1);
         }
         planets[scene].forEach(planet => {
             planet.update();
+            if (planet.text == 'Jack') {
+                jOrbit = planet.orbit;
+                jOS = planet.orbitSpeed;
+            }
+            if (planet.text == 'Nath' && !connected) {
+                planet.orbit %= (2 * PI);
+                jOrbit %= (2 * PI);
+                if (planet.orbit < 0) {
+                    planet.orbit = 2 * PI;
+                }
+                if (jOrbit < 0) {
+                    jOrbit = 2 * PI;
+                }
+                if (abs(planet.orbit - jOrbit) < 0.3) {
+                    planet.orbitSpeed = jOS;
+                    // planet.rotationSpeed *= -1;
+                    connected = true;
+                }
+            }
 
             if (frame <= 200) {
                 if (planet.text == 'Louisa') {
                     planet.size -= 30 / 200;
+                }
+
+                if(planet.text == 'Hannah') {
+                    planet.distance -= 0.5;
+                    planet.orbitSpeed += 0.00005;
+                }
+                if (planet.text == 'Nath') {
+                    planet.orbitSpeed *= 0.99;
                 }
             } else {
                 if (planet.text == 'James' && planet.orbitSpeed < 0) {
@@ -186,6 +218,10 @@ function keyPressed() {
 
     if (key == ' ') {
         galaxy = !galaxy;
+    }
+
+    if(key == 'o') {
+        instructions = !instructions;
     }
 
     if (key == 'r') {
