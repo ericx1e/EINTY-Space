@@ -15,6 +15,8 @@ function setup() {
     moonTex = loadImage('assets/moon.jpg');
     neptuneTex = loadImage('assets/neptune.jpg');
     greenTex = loadImage('assets/greenplanet.jpg');
+    redTex = loadImage('assets/redplanet.jpg');
+    sun2Tex = loadImage('assets/sun2.jpg');
     canvas = createCanvas(window.innerWidth, window.innerHeight, WEBGL);
     canvas.position(0, 0);
     rover = createRoverCam();
@@ -28,10 +30,12 @@ function setup() {
 
 let scene = 0;
 let startingFrame = 0;
+let collision = false;
+let frame;
 
 function draw() {
     background(0);
-    if(galaxy) {
+    if (galaxy) {
         texture(backgroundTex);
         noStroke();
         sphere(700);
@@ -45,7 +49,7 @@ function draw() {
     textSize(9);
     textAlign(CENTER, CENTER);
     fill(255);
-    translate(0, 0, - height/9.5);
+    translate(0, 0, - height / 9.5);
     text("Scene: " + (scene + 1), 0, - height / 20);
 
     textSize(3);
@@ -58,49 +62,116 @@ function draw() {
             planet.update();
         });
     }
+
+    let jOrbit;
+
     if (scene == 1) {
         frame = frameCount - startingFrame;
         planets[scene].forEach(planet => {
             planet.update();
             // planets[1].push(new Planet()
-            if(frame == 0) {}
-            if (frame < 200) {
-                if (planet.distance > 0) {
-                    planet.distance += 0.5;
-                    planet.orbitSpeed *= 0.999;
-                    if(planet.text == 'James') {
-                        planet.orbitSpeed *= 0.999;
-                    }
-                    if(planet.text == 'Lousia') {
-                        planet.size += 30/200;
-                    }
-                    if(planet.text == 'Lyida') {
-                        planet.size -=0.5;
-                    }
+            if (frame == 0) { }
+
+            if (planet.text == 'Jack') {
+                if (collision) {
+                    planet.orbitSpeed *= -1;
+                    planet.orbit += 5 * planet.orbitSpeed;
+                    collision = false;
+                }
+                jOrbit = planet.orbit;
+            }
+
+            if (planet.text == 'Nath') {
+                planet.orbit %= (2 * PI);
+                jOrbit %= (2 * PI);
+                if (planet.orbit < 0) {
+                    planet.orbit = 2 * PI;
+                }
+                if (jOrbit < 0) {
+                    jOrbit = 2 * PI;
+                }
+                if (abs(planet.orbit - jOrbit) < 0.3) {
+                    collision = true;
+                    planet.orbitSpeed *= -1;
+                    planet.orbit += 5 * planet.orbitSpeed;
+                    // planet.rotationSpeed *= -1;
+                }
+            }
+
+            if (frame <= 200) {
+                if (planet.text == 'Lydia') {
+                    planet.size -= 0.05;
+                    planet.rotationSpeed /= 2;
+                    return;
+                }
+                planet.distance += 0.5;
+                planet.orbitSpeed *= 0.999;
+                if (planet.text == 'Hannah') {
+                    planet.distance -= 1.3;
+                    planet.orbitSpeed += 0.00001;
+                }
+                // if (planet.text == 'James') {
+                //     planet.orbitSpeed *= 0.999;
+                // }
+                if (planet.text == 'Louisa') {
+                    planet.size += 30 / 200;
+                }
+                if (planet.text == 'Nath') {
+                    planet.distance -= 130 / 200 + 0.5;
+                    planet.orbitSpeed -= 0.0001;
                 }
             } else {
-                if(planet.text == 'James' && planet.orbitSpeed > 0) {
+                if (planet.text == 'James' && planet.orbitSpeed > 0) {
                     // console.log(planet.orbit%PI)
-                    if(abs(planet.orbit%(2*PI)-1.5*PI) < 0.1) {
+                    if (abs(planet.orbit % (2 * PI) - 1.5 * PI) < 0.1) {
                         planet.orbitZ = 480;
                         planet.distance = 100;
                         planet.orbit *= -1;
                         planet.orbitSpeed *= -1;
                         // planet.tex = earthTex;
                         planet.rotation *= -1;
-                        planets[1][planets[1].length-1].orbitSpeed = planet.orbitSpeed;
+                        // planets[1][planets[1].length - 1].orbitSpeed = planet.orbitSpeed;
                         // planets[1][planets[1].length-1].orbitZ = 480;
                         // planets[1][planets[1].length-1].distance = 100;
-                    } else {
-                        planet.tex = icyTex;
                     }
                 }
             }
         });
     }
 
-    if(scene == 2) {
+    if (scene == 2) {
         frame = frameCount - startingFrame;
+        if (planets[scene].length > 5 && frame > 200) {
+            planets[scene].splice(planets[scene].length - 1, 1);
+        }
+        planets[scene].forEach(planet => {
+            planet.update();
+
+            if (frame <= 200) {
+                if (planet.text == 'Louisa') {
+                    planet.size -= 30 / 200;
+                }
+            } else {
+                if (planet.text == 'James' && planet.orbitSpeed < 0) {
+                    if (abs(planet.orbit % (2 * PI) - 0.5 * PI) < 0.1) {
+                        planet.orbitZ = 380;
+                        planet.distance = 50;
+                        planet.orbit *= -1;
+                        planet.orbitSpeed *= -1;
+                        planet.rotation *= -1;
+                    }
+                }
+                if (planet.text == 'Marilyn' && planet.orbitSpeed > 0) {
+                    if (abs(planet.orbit % (2 * PI) - 1.5 * PI) < 0.1) {
+                        planet.orbitZ = 380;
+                        planet.distance = 50;
+                        planet.orbit *= -1;
+                        planet.orbitSpeed *= -1;
+                        planet.rotation *= -1;
+                    }
+                }
+            }
+        });
     }
 }
 
@@ -113,7 +184,7 @@ function keyPressed() {
         overheadView();
     }
 
-    if(key == ' ') {
+    if (key == ' ') {
         galaxy = !galaxy;
     }
 
@@ -134,27 +205,37 @@ function keyPressed() {
         if (scene > 0) {
             scene--;
             // reset();
-            startScene();
+            reset();
             // defaultView();
         }
     }
 }
 
 function startScene() {
-    if(scene == 0) {
+    if (scene == 0) {
         planets[0] = [];
 
         planets[0].push(new Planet(sunTex, 'Lydia', 0, 50, 0, 0, 0, 0.003, 0, 0));
         planets[0].push(new Planet(greenTex, 'Jack', 100, 25, 0, 0, 0, 0.01, 0.01, 0));
         planets[0].push(new Planet(icyTex, 'Marilyn', 200, 30, 0, 0, 0, 0.01, 0.02, 0));
-        planets[0].push(new Planet(icyTex, 'James', 280, 30, 0, 0, 0, 0.01, 0.015, PI));
+        planets[0].push(new Planet(moonTex, 'James', 280, 30, 0, 0, 0, 0.01, 0.015, PI));
         planets[0].push(new Planet(neptuneTex, 'Hannah', 550, 25, 0, 0, 0, 0.01, 0.001, 0));
-    
+
     }
-    if(scene == 1) {
-        planets[1] = planets[0];
+    if (scene == 1) {
+        arrayCopy(planets[0], 0, planets[1], 0, planets[0].length);
+        // planets[1] = planets[0];
         startingFrame = frameCount;
-        planets[1].push(new Planet(icyTex, 'Lousia', 1, 0, 0, 0, 480, 0.01, 0, -PI/2));
+        planets[1].push(new Planet(sun2Tex, 'Louisa', -100, 0, 0, 0, 480, 0.01, 0, -PI / 2));
+    }
+
+    if (scene == 2) {
+        if (frame > 200 && planets[1][4].orbitZ == 480) {
+            arrayCopy(planets[1], 0, planets[2], 0, planets[1].length);
+            // planets[2] = planets[1];
+            planets[2].splice(0, 1);
+        }
+        startingFrame = frameCount;
     }
 }
 
@@ -177,17 +258,27 @@ function reset() {
 
     planets[0].push(new Planet(sunTex, 'Lydia', 0, 50, 0, 0, 0, 0.003, 0, 0));
     planets[0].push(new Planet(greenTex, 'Jack', 100, 25, 0, 0, 0, 0.01, 0.01, 0));
+    planets[0].push(new Planet(redTex, 'Nath', 330, 30, 0, 0, 0, 0.01, 0.01, PI));
     planets[0].push(new Planet(icyTex, 'Marilyn', 200, 30, 0, 0, 0, 0.01, 0.02, 0));
-    planets[0].push(new Planet(icyTex, 'James', 280, 30, 0, 0, 0, 0.01, 0.015, PI));
+    planets[0].push(new Planet(moonTex, 'James', 280, 30, 0, 0, 0, 0.01, 0.02, PI));
     planets[0].push(new Planet(neptuneTex, 'Hannah', 550, 25, 0, 0, 0, 0.01, 0.001, 0));
 
 
     planets[1].push(new Planet(sunTex, 'Lydia', 0, 50, 0, 0, 0, 0, 0, 0));
-    planets[1].push(new Planet(greenTex, 'Jack', 100, 25, 0, 0, 0, 0.01, 0.01, 0));
-    planets[1].push(new Planet(icyTex, 'Marilyn', 200, 30, 0, 0, 0, 0.01, 0.03, 0));
-    planets[1].push(new Planet(icyTex, 'James', 280, 30, 0, 0, 0, 0.01, 0.02, PI));
-    planets[1].push(new Planet(moonTex, 'Moon', 50, 25, 0, 0, 200, 0.01, 0.01, 0));
-    planets[1].push(new Planet(moonTex, 'Moon', 50, 25, 0, 0, 200, 0.01, 0.01, PI));
+    planets[1].push(new Planet(greenTex, 'Jack', 100, 25, 0, 0, 0, 0.02, 0.01, 0));
+    planets[1].push(new Planet(redTex, 'Nath', 330, 30, 0, 0, 0, 0.02, 0.01, PI));
+    planets[1].push(new Planet(icyTex, 'Marilyn', 200, 30, 0, 0, 0, 0.01, 0.02, 0));
+    planets[1].push(new Planet(moonTex, 'James', 280, 30, 0, 0, 0, 0.01, 0.02, PI));
+    planets[1].push(new Planet(neptuneTex, 'Hannah', 550, 25, 0, 0, 0, 0.01, 0.001, 0));
+    planets[1].push(new Planet(sun2Tex, 'Louisa', -100, 0, 0, 0, 480, 0.01, 0, -PI / 2));
+
+
+    planets[2].push(new Planet(greenTex, 'Jack', 200, 25, 0, 0, 0, 0.02, 0.008194682977764125, 0));
+    planets[2].push(new Planet(redTex, 'Nath', 200, 30, 0, 0, 0, 0.02, -0.009858487244594663, PI));
+    planets[2].push(new Planet(icyTex, 'Marilyn', 300, 30, 0, 0, 0, 0.01, 0.01638936595552825, 0));
+    planets[2].push(new Planet(moonTex, 'James', 100, 30, 0, 0, 480, 0.01, -0.01638936595552825, PI));
+    planets[2].push(new Planet(neptuneTex, 'Hannah', 390, 25, 0, 0, 0, 0.01, 0.002624785320012295, 0));
+    planets[2].push(new Planet(sun2Tex, 'Louisa', 0, 30, 0, 0, 480, 0.01, 0, -PI / 2));
 
 }
 
@@ -220,12 +311,14 @@ function Planet(tex, tx, d, size, ox, oy, oz, rs, os, io) {
         }
 
         pop();
+        fill(255);
         translate(0, -1.5 * this.size, 0);
         textFont(font);
         textAlign(CENTER, CENTER);
         rotateY(-this.orbit - PI / 2 - rover.pan);
         rotateX(+ rover.tilt);
         text(this.text, 0, 0);
+        // text(this.orbit, 0, -100);
         pop();
         this.rotation += this.rotationSpeed;
         this.orbit += this.orbitSpeed;
